@@ -132,6 +132,11 @@ async function apiRequest<T>(
     }
 
     // Return JSON response
+    // Handle 204 No Content (no response body)
+    if (response.status === 204) {
+      return null as T;
+    }
+
     return await response.json();
   } catch (error) {
     if (error instanceof APIError) throw error;
@@ -201,8 +206,8 @@ export const taskAPI = {
     });
   },
 
-  async deleteTask(userId: string, taskId: string): Promise<DeleteTaskResponse> {
-    return apiRequest<DeleteTaskResponse>(`/api/users/${userId}/tasks/${taskId}`, {
+  async deleteTask(userId: string, taskId: string): Promise<void> {
+    await apiRequest<void>(`/api/users/${userId}/tasks/${taskId}`, {
       method: 'DELETE',
     });
   },
