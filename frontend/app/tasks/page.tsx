@@ -69,22 +69,39 @@ export default function TasksPage() {
   const handleCreateTask = async (title: string, description: string) => {
     if (!user) return;
 
+    // Create temporary task for optimistic UI update
+    const tempId = `temp-${Date.now()}`;
+    const tempTask: Task = {
+      id: tempId,
+      user_id: user.id,
+      title,
+      description: description || '',
+      is_completed: false,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+
+    // Optimistic update: immediately add task to UI
+    setTasks((prev) => [tempTask, ...prev]);
+    setShowCreateForm(false);
+
     try {
-      // Create task via API
+      // Create task via API in background
       const task = await taskAPI.createTask(user.id, {
         title,
         description,
       });
 
-      // Optimistic update: add new task to the list
-      setTasks((prev) => [task, ...prev]);
+      // Replace temporary task with real task from server
+      setTasks((prev) => prev.map((t) => (t.id === tempId ? task : t)));
 
       // Show success toast
       showToast('Task created successfully!', 'success');
-
-      // Close the form
-      setShowCreateForm(false);
     } catch (err) {
+      // Rollback: remove temporary task on error
+      setTasks((prev) => prev.filter((t) => t.id !== tempId));
+      setShowCreateForm(true); // Reopen form so user can retry
+
       if (err instanceof APIError) {
         showToast(err.message, 'error');
       } else {
