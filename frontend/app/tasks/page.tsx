@@ -42,8 +42,8 @@ export default function TasksPage() {
       setError(null);
 
       try {
-        const response = await taskAPI.getTasks(user.id);
-        setTasks(response.tasks);
+        const tasks = await taskAPI.getTasks(user.id);
+        setTasks(tasks);
       } catch (err) {
         if (err instanceof APIError) {
           // Handle 401 Unauthorized - redirect to login
@@ -71,13 +71,13 @@ export default function TasksPage() {
 
     try {
       // Create task via API
-      const response = await taskAPI.createTask(user.id, {
+      const task = await taskAPI.createTask(user.id, {
         title,
         description,
       });
 
       // Optimistic update: add new task to the list
-      setTasks((prev) => [response.task, ...prev]);
+      setTasks((prev) => [task, ...prev]);
 
       // Show success toast
       showToast('Task created successfully!', 'success');

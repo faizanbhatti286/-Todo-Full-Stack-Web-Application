@@ -16,7 +16,8 @@ interface TaskListProps {
 }
 
 export default function TaskList({ tasks, onToggleComplete, onDelete }: TaskListProps) {
-  if (tasks.length === 0) {
+  // Safety check: handle undefined or null tasks
+  if (!tasks || tasks.length === 0) {
     return (
       <div className="bg-white rounded-lg shadow-sm p-12 text-center">
         <svg

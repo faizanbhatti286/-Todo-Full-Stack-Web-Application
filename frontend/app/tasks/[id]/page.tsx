@@ -42,8 +42,8 @@ export default function TaskDetailPage() {
       setError(null);
 
       try {
-        const response = await taskAPI.getTask(user.id, taskId);
-        setTask(response.task);
+        const task = await taskAPI.getTask(user.id, taskId);
+        setTask(task);
       } catch (err) {
         if (err instanceof APIError) {
           // Handle 401 Unauthorized - redirect to login
@@ -75,13 +75,13 @@ export default function TaskDetailPage() {
     if (!user || !task) return;
 
     try {
-      const response = await taskAPI.updateTask(user.id, task.id, {
+      const updatedTask = await taskAPI.updateTask(user.id, task.id, {
         title,
         description,
       });
 
       // Update local state
-      setTask(response.task);
+      setTask(updatedTask);
 
       // Show success toast
       showToast('Task updated successfully!', 'success');
