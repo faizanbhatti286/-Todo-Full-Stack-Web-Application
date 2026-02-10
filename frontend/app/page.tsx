@@ -1,115 +1,101 @@
-/**
- * Home/Landing Page
- *
- * Entry point with navigation to login/signup
- */
-
 import Link from 'next/link';
+import { Logo } from '@/components/Logo';
+import { AuthFooter } from '@/components/AuthFooter';
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-900 sm:text-5xl md:text-6xl">
-            Welcome to{' '}
-            <span className="text-blue-600">Todo App</span>
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 via-white to-gray-50">
+      {/* Hero Section */}
+      <div className="flex-1 flex items-center justify-center px-4 py-12">
+        <div className="max-w-4xl mx-auto text-center animate-fadeIn">
+          {/* Logo */}
+          <div className="flex justify-center mb-8">
+            <Logo size="lg" showText={false} href="/" />
+          </div>
+
+          {/* Hero Content */}
+          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 animate-slideUp">
+            Welcome to <span className="text-blue-600">TaskFlow</span>
           </h1>
-          <p className="mt-3 max-w-md mx-auto text-base text-gray-600 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
-            Stay organized and productive with our simple, powerful task management application.
+
+          <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-2xl mx-auto animate-slideUp" style={{ animationDelay: '0.1s' }}>
+            Organize your tasks, boost your productivity, and achieve your goals with our modern task management platform.
           </p>
-          <div className="mt-10 flex flex-col gap-4 items-center justify-center sm:flex-row sm:gap-6">
+
+          {/* Features */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 animate-slideUp" style={{ animationDelay: '0.2s' }}>
+            <div className="bg-white rounded-xl p-6 shadow-md hover:shadow-xl transition-all duration-300">
+              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Organize Tasks</h3>
+              <p className="text-gray-600 text-sm">Create, categorize, and manage your tasks efficiently</p>
+            </div>
+
+            <div className="bg-white rounded-xl p-6 shadow-md hover:shadow-xl transition-all duration-300">
+              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <svg className="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Track Progress</h3>
+              <p className="text-gray-600 text-sm">Monitor your productivity with detailed statistics</p>
+            </div>
+
+            <div className="bg-white rounded-xl p-6 shadow-md hover:shadow-xl transition-all duration-300">
+              <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <svg className="w-6 h-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Stay Focused</h3>
+              <p className="text-gray-600 text-sm">Filter and prioritize tasks to stay on track</p>
+            </div>
+          </div>
+
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-slideUp" style={{ animationDelay: '0.3s' }}>
             <Link
               href="/signup"
-              className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors min-h-[44px] md:text-lg"
+              className="w-full sm:w-auto px-8 py-4 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
             >
-              Get Started
+              Get Started Free
             </Link>
             <Link
               href="/login"
-              className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3 border border-gray-300 text-base font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors min-h-[44px] md:text-lg"
+              className="w-full sm:w-auto px-8 py-4 bg-white text-blue-600 border-2 border-blue-600 rounded-lg font-semibold hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200"
             >
               Sign In
             </Link>
           </div>
-        </div>
 
-        <div className="mt-20">
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <div className="flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white">
-                <svg
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                  />
-                </svg>
-              </div>
-              <h3 className="mt-4 text-lg font-medium text-gray-900">
-                Simple Task Management
-              </h3>
-              <p className="mt-2 text-base text-gray-600">
-                Create, organize, and track your tasks with an intuitive interface.
-              </p>
+          {/* Social Proof */}
+          <p className="mt-12 text-gray-500 text-sm animate-fadeIn" style={{ animationDelay: '0.4s' }}>
+            Join thousands of users managing their tasks efficiently
+          </p>
+
+          {/* Stats */}
+          <div className="mt-16 grid grid-cols-3 gap-8 max-w-2xl mx-auto animate-fadeIn" style={{ animationDelay: '0.5s' }}>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-blue-600 mb-1">10K+</div>
+              <div className="text-sm text-gray-600">Active Users</div>
             </div>
-
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <div className="flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white">
-                <svg
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                  />
-                </svg>
-              </div>
-              <h3 className="mt-4 text-lg font-medium text-gray-900">
-                Secure & Private
-              </h3>
-              <p className="mt-2 text-base text-gray-600">
-                Your tasks are protected with secure authentication and encryption.
-              </p>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-green-600 mb-1">50K+</div>
+              <div className="text-sm text-gray-600">Tasks Completed</div>
             </div>
-
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <div className="flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white">
-                <svg
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
-                  />
-                </svg>
-              </div>
-              <h3 className="mt-4 text-lg font-medium text-gray-900">
-                Responsive Design
-              </h3>
-              <p className="mt-2 text-base text-gray-600">
-                Access your tasks anywhere, on any device with our mobile-friendly design.
-              </p>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-purple-600 mb-1">99%</div>
+              <div className="text-sm text-gray-600">Satisfaction</div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Footer */}
+      <AuthFooter />
     </div>
   );
 }

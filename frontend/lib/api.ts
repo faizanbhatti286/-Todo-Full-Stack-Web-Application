@@ -17,7 +17,8 @@ import {
   UpdateTaskResponse,
   PartialUpdateTaskRequest,
   DeleteTaskResponse,
-  GetTaskResponse
+  GetTaskResponse,
+  Task
 } from './types';
 
 // API Configuration
@@ -108,25 +109,65 @@ async function apiRequest<T>(
       } catch {
         // Fallback to text
         const text = await response.text();
-        errorData = {
-          error: {
-            code: 'UNKNOWN_ERROR',
-            message: text || 'Invalid response from server',
-            details: `HTTP ${response.status}: ${response.statusText}`
-          }
-        };
+        throw new APIError(
+          'UNKNOWN_ERROR',
+          text || `HTTP ${response.status}: ${response.statusText}`,
+          undefined,
+          response.status
+        );
       }
 
-      console.error('API Error Response:', response.status, response.statusText, errorData);
+      // Log only unexpected errors (not validation/auth errors)
+      if (response.status >= 500 || response.status === 0) {
+        console.error('API Error Response:', response.status, response.statusText, errorData);
+      }
 
+      // Check if it's a standard API error response
       if (isAPIErrorResponse(errorData)) {
         throw APIError.fromResponse(errorData, response.status);
       }
 
+      // Handle FastAPI's detail field (most common format)
+      if (errorData.detail) {
+        const detailMessage = typeof errorData.detail === 'string'
+          ? errorData.detail
+          : JSON.stringify(errorData.detail);
+
+        // Map specific error messages to error codes
+        let errorCode = 'UNKNOWN_ERROR';
+        if (response.status === 409) {
+          errorCode = 'CONFLICT';
+        } else if (response.status === 400) {
+          errorCode = 'VALIDATION_ERROR';
+        } else if (response.status === 401) {
+          errorCode = 'UNAUTHORIZED';
+        } else if (response.status === 404) {
+          errorCode = 'NOT_FOUND';
+        }
+
+        throw new APIError(
+          errorCode,
+          detailMessage,
+          `HTTP ${response.status}`,
+          response.status
+        );
+      }
+
+      // Handle other error formats
+      if (errorData.message) {
+        throw new APIError(
+          'UNKNOWN_ERROR',
+          errorData.message,
+          `HTTP ${response.status}`,
+          response.status
+        );
+      }
+
+      // Fallback error
       throw new APIError(
         'UNKNOWN_ERROR',
-        errorData.error?.message || 'An unexpected error occurred',
-        errorData.error?.details || `HTTP ${response.status}: ${response.statusText}`,
+        'An unexpected error occurred',
+        `HTTP ${response.status}: ${response.statusText}`,
         response.status
       );
     }
@@ -180,8 +221,15 @@ export const authAPI = {
  * Task API Methods
  */
 export const taskAPI = {
-  async getTasks(userId: string): Promise<Task[]> {
-    return apiRequest<Task[]>(`/api/users/${userId}/tasks`);
+  async getTasks(userId: string, status?: string, category?: string): Promise<Task[]> {
+    const params = new URLSearchParams();
+    if (status) params.append('status', status);
+    if (category) params.append('category', category);
+
+    const queryString = params.toString();
+    const endpoint = `/api/users/${userId}/tasks${queryString ? `?${queryString}` : ''}`;
+
+    return apiRequest<Task[]>(endpoint);
   },
 
   async getTask(userId: string, taskId: string): Promise<Task> {

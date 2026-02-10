@@ -15,26 +15,45 @@ from fastapi import HTTPException, status
 from ..models.task import Task
 
 
-async def get_user_tasks(user_id: str, session: AsyncSession) -> List[Task]:
-    """Get all tasks for a specific user.
+async def get_user_tasks(
+    user_id: str,
+    session: AsyncSession,
+    status_filter: Optional[str] = None,
+    category_filter: Optional[str] = None
+) -> List[Task]:
+    """Get all tasks for a specific user with optional filtering.
 
     Args:
         user_id: User's unique identifier
         session: Database session
+        status_filter: Optional status filter (pending, in_progress, completed)
+        category_filter: Optional category filter
 
     Returns:
         List of tasks belonging to the user, sorted by creation date (newest first)
     """
-    result = await session.execute(
-        select(Task)
-        .where(Task.user_id == UUID(user_id))
-        .order_by(Task.created_at.desc())
-    )
+    query = select(Task).where(Task.user_id == UUID(user_id))
+
+    # Apply status filter if provided
+    if status_filter:
+        query = query.where(Task.status == status_filter)
+
+    # Apply category filter if provided
+    if category_filter:
+        query = query.where(Task.category == category_filter)
+
+    query = query.order_by(Task.created_at.desc())
+
+    result = await session.execute(query)
     return result.scalars().all()
 
 
 async def create_task(
-    user_id: str, title: str, description: Optional[str], session: AsyncSession
+    user_id: str,
+    title: str,
+    description: Optional[str],
+    category: Optional[str],
+    session: AsyncSession
 ) -> Task:
     """Create a new task for a user.
 
@@ -42,6 +61,7 @@ async def create_task(
         user_id: User's unique identifier
         title: Task title
         description: Optional task description
+        category: Task category (defaults to 'general')
         session: Database session
 
     Returns:
@@ -51,6 +71,8 @@ async def create_task(
         user_id=UUID(user_id),
         title=title,
         description=description,
+        category=category or "general",
+        status="pending",
     )
 
     session.add(new_task)
@@ -104,6 +126,8 @@ async def update_task(
     title: Optional[str],
     description: Optional[str],
     is_completed: Optional[bool],
+    status: Optional[str],
+    category: Optional[str],
     session: AsyncSession,
 ) -> Task:
     """Update a task with ownership validation.
@@ -114,6 +138,8 @@ async def update_task(
         title: Updated title (optional)
         description: Updated description (optional)
         is_completed: Updated completion status (optional)
+        status: Updated task status (optional)
+        category: Updated task category (optional)
         session: Database session
 
     Returns:
@@ -132,6 +158,10 @@ async def update_task(
         task.description = description
     if is_completed is not None:
         task.is_completed = is_completed
+    if status is not None:
+        task.status = status
+    if category is not None:
+        task.category = category
 
     # Update timestamp
     task.updated_at = datetime.utcnow()

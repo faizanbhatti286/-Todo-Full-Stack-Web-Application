@@ -4,12 +4,17 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth';
 import { useState, useEffect } from 'react';
+import { Logo } from '@/components/Logo';
+import { AuthFooter } from '@/components/AuthFooter';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
 
 export default function LoginPage() {
   const router = useRouter();
   const { login, error, clearError, user } = useAuth();
   const [successMessage, setSuccessMessage] = useState('');
   const [validationError, setValidationError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const [usernameOrEmail, setUsernameOrEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -30,122 +35,140 @@ export default function LoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setValidationError('');
+    setIsLoading(true);
 
     // Validate username or email
     if (!usernameOrEmail.trim()) {
       setValidationError('Username or email is required');
+      setIsLoading(false);
       return;
     }
 
     // Validate password
     if (!password) {
       setValidationError('Password is required');
+      setIsLoading(false);
       return;
     }
 
     try {
-      // Determine if input is email or username
-      const loginIdentifier = isEmail(usernameOrEmail) ? usernameOrEmail : usernameOrEmail;
-
-      // For now, the backend expects email, so we pass the input as email
-      // In a full implementation, the backend would handle both username and email
       await login(usernameOrEmail, password);
 
+      // Immediately redirect to tasks without waiting
       setSuccessMessage('Login successful!');
-      setTimeout(() => router.push('/tasks'), 1500);
+      router.push('/tasks');
     } catch (err: any) {
-      console.error('Login API Error:', err);
+      // Handle authentication errors (401, 400) as normal user feedback
+      if (err.status === 401 || err.status === 400 || err.code === 'UNAUTHORIZED' || err.code === 'VALIDATION_ERROR') {
+        // This is expected user feedback, not an application error
+        setValidationError(err.message || 'Invalid credentials. Please try again.');
+      } else {
+        // Log actual errors (network issues, server errors, etc.)
+        console.error('Login error:', err);
+        setValidationError('An unexpected error occurred. Please try again.');
+      }
+
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12">
-      <div className="w-full max-w-md animate-fadeIn">
-        <div className="bg-white rounded-lg shadow-lg p-10 transition-all duration-500 ease-in-out hover:scale-105">
-
-          {/* Stylish Welcome Header */}
-          <div className="text-center mb-6">
-            <h2 className="text-3xl font-extrabold text-blue-600 mb-2 animate-fadeIn">
-              Welcome Back
-            </h2>
-            <p className="text-gray-500 text-sm animate-fadeIn">
-              Sign in to your account
-            </p>
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 to-gray-100">
+      <div className="flex-1 flex items-center justify-center px-4 py-12">
+        <div className="w-full max-w-md animate-slideUp">
+          {/* Logo */}
+          <div className="flex justify-center mb-8">
+            <Logo size="lg" />
           </div>
 
-          {/* Login Form */}
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div>
-              <input
+          <div className="bg-white rounded-2xl shadow-xl p-8 md:p-10 space-y-6">
+            {/* Welcome Header */}
+            <div className="text-center">
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                Welcome Back
+              </h1>
+              <p className="text-gray-600">
+                Sign in to your account
+              </p>
+            </div>
+
+            {/* Login Form */}
+            <form onSubmit={handleLogin} className="space-y-5">
+              <Input
                 type="text"
                 placeholder="Username or Email"
                 value={usernameOrEmail}
                 onChange={(e) => setUsernameOrEmail(e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+                error={validationError && !usernameOrEmail ? validationError : undefined}
                 required
               />
-              <p className="text-xs text-gray-500 mt-1">Enter your username or email address</p>
-            </div>
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
-              required
-            />
-            <button
-              type="submit"
-              className="w-full bg-blue-600 text-white p-3 rounded-lg font-semibold hover:bg-blue-500 transition-all duration-300"
-            >
-              Sign In
-            </button>
-          </form>
 
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
-              Don&apos;t have an account?{' '}
-              <Link
-                href="/signup"
-                className="font-medium text-blue-600 hover:text-blue-500 transition-colors duration-300"
+              <div>
+                <Input
+                  type="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  error={validationError && !password ? validationError : undefined}
+                  required
+                />
+                <div className="mt-2 text-right">
+                  <Link
+                    href="/forgot-password"
+                    className="text-sm text-blue-600 hover:text-blue-700 transition-colors duration-200"
+                  >
+                    Forgot Password?
+                  </Link>
+                </div>
+              </div>
+
+              <Button
+                type="submit"
+                variant="primary"
+                size="lg"
+                isLoading={isLoading}
+                className="w-full"
               >
-                Sign up
-              </Link>
-            </p>
+                Sign In
+              </Button>
+            </form>
+
+            {/* Sign Up Link */}
+            <div className="text-center pt-4 border-t border-gray-200">
+              <p className="text-sm text-gray-600">
+                Don&apos;t have an account?{' '}
+                <Link
+                  href="/signup"
+                  className="font-semibold text-blue-600 hover:text-blue-700 transition-colors duration-200"
+                >
+                  Sign up
+                </Link>
+              </p>
+            </div>
+
+            {/* Error Messages */}
+            {(validationError || error) && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-3 animate-slideDown">
+                <p className="text-sm text-red-600 text-center">
+                  {validationError || error}
+                </p>
+              </div>
+            )}
+
+            {/* Success Message */}
+            {successMessage && (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-3 animate-slideDown">
+                <p className="text-sm text-green-600 text-center">
+                  {successMessage}
+                </p>
+              </div>
+            )}
           </div>
-
-          {/* Validation error message */}
-          {validationError && (
-            <p className="text-red-500 mt-4 text-center animate-fadeIn">
-              {validationError}
-            </p>
-          )}
-
-          {/* API error message */}
-          {error && (
-            <p className="text-red-500 mt-4 text-center animate-fadeIn">
-              {error}
-            </p>
-          )}
-
-          {/* Success message */}
-          {successMessage && (
-            <p className="text-green-500 mt-4 text-center animate-fadeIn">
-              {successMessage}
-            </p>
-          )}
         </div>
       </div>
 
-      <style jsx>{`
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(-10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fadeIn {
-          animation: fadeIn 0.5s ease-in-out forwards;
-        }
-      `}</style>
+      {/* Footer */}
+      <AuthFooter />
     </div>
   );
 }

@@ -4,8 +4,8 @@ This module provides CRUD operations for tasks with JWT authentication
 and user isolation enforcement.
 """
 
-from typing import List
-from fastapi import APIRouter, Depends, HTTPException, status
+from typing import List, Optional
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..database import get_session
@@ -28,13 +28,17 @@ def validate_user_id(user_id: str, current_user_id: str):
 @router.get("/{user_id}/tasks", response_model=List[TaskResponse])
 async def get_tasks(
     user_id: str,
+    status: Optional[str] = None,
+    category: Optional[str] = None,
     current_user_id: str = Depends(get_current_user_id),
     session: AsyncSession = Depends(get_session),
 ):
-    """Get all tasks for the authenticated user.
+    """Get all tasks for the authenticated user with optional filtering.
 
     Args:
         user_id: User ID from URL path
+        status: Optional status filter (pending, in_progress, completed)
+        category: Optional category filter
         current_user_id: Current authenticated user ID from JWT
         session: Database session
 
@@ -42,7 +46,9 @@ async def get_tasks(
         List of tasks belonging to the user
     """
     validate_user_id(user_id, current_user_id)
-    tasks = await task_service.get_user_tasks(current_user_id, session)
+    tasks = await task_service.get_user_tasks(
+        current_user_id, session, status_filter=status, category_filter=category
+    )
     return tasks
 
 
@@ -57,7 +63,7 @@ async def create_task(
 
     Args:
         user_id: User ID from URL path
-        request: Task creation request with title and optional description
+        request: Task creation request with title, optional description, and category
         current_user_id: Current authenticated user ID from JWT
         session: Database session
 
@@ -69,6 +75,7 @@ async def create_task(
         user_id=current_user_id,
         title=request.title,
         description=request.description,
+        category=request.category,
         session=session,
     )
     return task
@@ -168,6 +175,8 @@ async def update_task_partial(
         title=request.title,
         description=request.description,
         is_completed=request.is_completed,
+        status=request.status,
+        category=request.category,
         session=session,
     )
     return task

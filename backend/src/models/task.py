@@ -18,6 +18,8 @@ class Task(SQLModel, table=True):
         title: Task title/summary (required, max 500 chars)
         description: Optional detailed description
         is_completed: Completion status (default False)
+        category: Task category (default 'general', max 50 chars)
+        status: Task status - 'pending', 'in_progress', or 'completed' (default 'pending')
         created_at: Task creation timestamp
         updated_at: Last update timestamp
     """
@@ -29,5 +31,7 @@ class Task(SQLModel, table=True):
     title: str = Field(max_length=500)
     description: Optional[str] = Field(default=None)
     is_completed: bool = Field(default=False)
+    category: str = Field(default="general", max_length=50)
+    status: str = Field(default="pending", max_length=20)
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)

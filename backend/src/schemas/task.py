@@ -3,8 +3,8 @@
 This module defines Pydantic schemas for task endpoints.
 """
 
-from pydantic import BaseModel
-from typing import Optional
+from pydantic import BaseModel, Field
+from typing import Optional, Literal
 from datetime import datetime
 from uuid import UUID
 
@@ -15,10 +15,12 @@ class TaskCreateRequest(BaseModel):
     Attributes:
         title: Task title (required, max 500 chars)
         description: Optional detailed description
+        category: Task category (optional, defaults to 'general')
     """
 
-    title: str
+    title: str = Field(max_length=500)
     description: Optional[str] = None
+    category: Optional[str] = Field(default="general", max_length=50)
 
 
 class TaskUpdateRequest(BaseModel):
@@ -30,11 +32,15 @@ class TaskUpdateRequest(BaseModel):
         title: Updated task title
         description: Updated description
         is_completed: Updated completion status
+        status: Updated task status (pending, in_progress, completed)
+        category: Updated task category
     """
 
-    title: Optional[str] = None
+    title: Optional[str] = Field(None, max_length=500)
     description: Optional[str] = None
     is_completed: Optional[bool] = None
+    status: Optional[Literal["pending", "in_progress", "completed"]] = None
+    category: Optional[str] = Field(None, max_length=50)
 
 
 class TaskResponse(BaseModel):
@@ -46,6 +52,8 @@ class TaskResponse(BaseModel):
         title: Task title
         description: Task description (nullable)
         is_completed: Completion status
+        category: Task category
+        status: Task status (pending, in_progress, completed)
         created_at: Creation timestamp
         updated_at: Last update timestamp
     """
@@ -55,6 +63,8 @@ class TaskResponse(BaseModel):
     title: str
     description: Optional[str]
     is_completed: bool
+    category: str
+    status: str
     created_at: datetime
     updated_at: datetime
 

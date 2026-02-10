@@ -13,7 +13,8 @@ interface TaskFormProps {
   mode?: 'create' | 'edit';
   initialTitle?: string;
   initialDescription?: string;
-  onSubmit: (title: string, description: string) => Promise<void>;
+  initialCategory?: string;
+  onSubmit: (title: string, description: string, category: string) => Promise<void>;
   onCancel?: () => void;
 }
 
@@ -21,20 +22,23 @@ export default function TaskForm({
   mode = 'create',
   initialTitle = '',
   initialDescription = '',
+  initialCategory = 'general',
   onSubmit,
   onCancel
 }: TaskFormProps) {
   const [title, setTitle] = useState(initialTitle);
   const [description, setDescription] = useState(initialDescription);
+  const [category, setCategory] = useState(initialCategory);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [validationErrors, setValidationErrors] = useState<{
     title?: string;
     description?: string;
+    category?: string;
   }>({});
 
   const validateForm = (): boolean => {
-    const errors: { title?: string; description?: string } = {};
+    const errors: { title?: string; description?: string; category?: string } = {};
 
     // Title validation: required, 1-200 characters
     if (!title.trim()) {
@@ -46,6 +50,11 @@ export default function TaskForm({
     // Description validation: max 1000 characters
     if (description.length > 1000) {
       errors.description = 'Description must not exceed 1000 characters';
+    }
+
+    // Category validation: max 50 characters
+    if (category.length > 50) {
+      errors.category = 'Category must not exceed 50 characters';
     }
 
     setValidationErrors(errors);
@@ -67,12 +76,13 @@ export default function TaskForm({
     setLoading(true);
 
     try {
-      await onSubmit(title.trim(), description.trim());
+      await onSubmit(title.trim(), description.trim(), category.trim());
 
       // Clear form after successful creation (only in create mode)
       if (mode === 'create') {
         setTitle('');
         setDescription('');
+        setCategory('general');
       }
     } catch (err) {
       setError(
@@ -115,6 +125,31 @@ export default function TaskForm({
         )}
         <p className="mt-1 text-xs text-gray-500">
           {title.length}/200 characters
+        </p>
+      </div>
+
+      <div>
+        <label
+          htmlFor="category"
+          className="block text-sm font-medium text-gray-700 mb-1"
+        >
+          Category
+        </label>
+        <input
+          id="category"
+          type="text"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          disabled={loading}
+          maxLength={50}
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed text-sm sm:text-base"
+          placeholder="e.g., work, personal, shopping"
+        />
+        {validationErrors.category && (
+          <p className="mt-1 text-sm text-red-600">{validationErrors.category}</p>
+        )}
+        <p className="mt-1 text-xs text-gray-500">
+          {category.length}/50 characters
         </p>
       </div>
 
