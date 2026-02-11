@@ -84,16 +84,18 @@
 
 ### Functional Requirements
 
-- **FR-001**: System MUST [specific capability, e.g., "allow users to create accounts"]
-- **FR-002**: System MUST [specific capability, e.g., "validate email addresses"]  
-- **FR-003**: Users MUST be able to [key interaction, e.g., "reset their password"]
-- **FR-004**: System MUST [data requirement, e.g., "persist user preferences"]
-- **FR-005**: System MUST [behavior, e.g., "log all security events"]
+- **FR-001**: System MUST implement RESTful API endpoints using FastAPI as specified in the tech stack
+- **FR-002**: System MUST use SQLModel for database operations with Neon Serverless PostgreSQL
+- **FR-003**: System MUST implement JWT-based authentication using Better Auth for user verification
+- **FR-004**: System MUST ensure users can only access and modify their own data through proper authentication enforcement
+- **FR-005**: System MUST provide a responsive frontend using Next.js 16+ (App Router) that works across desktop and mobile devices
+- **FR-006**: System MUST follow the specified tech stack: Next.js, FastAPI, SQLModel, Neon PostgreSQL, and Better Auth
+- **FR-007**: System MUST store all user data securely with proper encryption and access controls
 
 *Example of marking unclear requirements:*
 
-- **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
-- **FR-007**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
+- **FR-008**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
+- **FR-009**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
 
 ### Key Entities *(include if feature involves data)*
 

@@ -31,7 +31,12 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+- **Spec-Driven Development**: Verify that implementation follows clearly defined specs, plans, and tasks—no ad-hoc manual coding
+- **Accuracy & Correctness**: Confirm all API endpoints, authentication flows, and UI behaviors will function according to the spec
+- **Security & User Isolation**: Ensure JWT authentication will be correctly enforced with proper user data isolation
+- **Reproducibility**: Verify that setup, database schema, and deployment steps will be clearly documented and reproducible
+- **Responsive Design**: Confirm frontend will work consistently across desktop and mobile devices
+- **Tech Stack Compliance**: Validate all components will use Next.js 16+ (App Router), FastAPI, SQLModel, Neon Serverless PostgreSQL, and Better Auth
 
 ## Project Structure
 

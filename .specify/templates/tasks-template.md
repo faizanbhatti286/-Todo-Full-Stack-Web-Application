@@ -62,12 +62,13 @@ description: "Task list template for feature implementation"
 
 Examples of foundational tasks (adjust based on your project):
 
-- [ ] T004 Setup database schema and migrations framework
-- [ ] T005 [P] Implement authentication/authorization framework
-- [ ] T006 [P] Setup API routing and middleware structure
-- [ ] T007 Create base models/entities that all stories depend on
-- [ ] T008 Configure error handling and logging infrastructure
-- [ ] T009 Setup environment configuration management
+- [ ] T004 Setup database schema and migrations framework using SQLModel with Neon Serverless PostgreSQL
+- [ ] T005 [P] Implement authentication/authorization framework using Better Auth with JWT tokens
+- [ ] T006 [P] Setup FastAPI routing and middleware structure following RESTful API principles
+- [ ] T007 Create base models/entities that all stories depend on using SQLModel
+- [ ] T008 Configure error handling and logging infrastructure with proper security logging
+- [ ] T009 Setup environment configuration management with secure handling of `BETTER_AUTH_SECRET`
+- [ ] T010 [P] Configure Next.js 16+ (App Router) frontend project structure
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -150,12 +151,15 @@ Examples of foundational tasks (adjust based on your project):
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] TXXX [P] Documentation updates in docs/
-- [ ] TXXX Code cleanup and refactoring
+- [ ] TXXX [P] Documentation updates in docs/ including setup and deployment guides
+- [ ] TXXX Code cleanup and refactoring following constitution principles
 - [ ] TXXX Performance optimization across all stories
 - [ ] TXXX [P] Additional unit tests (if requested) in tests/unit/
-- [ ] TXXX Security hardening
-- [ ] TXXX Run quickstart.md validation
+- [ ] TXXX Security hardening including JWT authentication verification and user data isolation
+- [ ] TXXX Verify all API endpoints enforce JWT authentication and return 401 for unauthenticated requests
+- [ ] TXXX Test that users can only access and modify their own data with proper authentication enforcement
+- [ ] TXXX Run quickstart.md validation for reproducible setup
+- [ ] TXXX Frontend responsive design testing across desktop and mobile devices
 
 ---
 

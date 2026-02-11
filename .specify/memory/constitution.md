@@ -1,55 +1,67 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!-- SYNC IMPACT REPORT
+Version change: N/A → 1.0.0
+Modified principles: None (new constitution)
+Added sections: All sections
+Removed sections: None
+Templates requiring updates:
+  - .specify/templates/plan-template.md ✅ updated
+  - .specify/templates/spec-template.md ✅ updated
+  - .specify/templates/tasks-template.md ✅ updated
+  - .specify/templates/commands/*.md ⚠ pending
+  - README.md ⚠ pending
+Follow-up TODOs: None
+-->
+
+# Todo Full-Stack Web Application (Hackathon Phase-2) Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### Spec-Driven Development
+All features are implemented via clearly defined specs, plans, and tasks—no manual coding. Every implementation must follow the defined specification and be tracked through the planned tasks before any code is written.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### Accuracy & Correctness
+All API endpoints, authentication flows, and UI behaviors must function according to the spec. Every feature must behave exactly as specified in the requirements document, with no deviations in functionality or user experience.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### Security & User Isolation
+Users can only access and modify their own data; JWT authentication must be correctly enforced. The system must implement proper access controls to ensure data privacy and security between different users.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### Reproducibility
+Application setup, database schema, and deployment steps must be clearly documented and reproducible. Anyone should be able to set up the complete development environment and deploy the application following the provided documentation.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### Responsive Design
+Frontend interface works consistently across desktop and mobile devices. The user interface must provide an optimal viewing and interaction experience across different screen sizes and device types.
 
-### [PRINCIPLE_6_NAME]
+### Tech Stack Compliance
+All development must use the specified technology stack: Next.js 16+ (App Router), FastAPI, SQLModel, Neon Serverless PostgreSQL, and Better Auth for authentication. No alternative technologies may be introduced without explicit approval.
 
+## Key Standards
 
-[PRINCIPLE__DESCRIPTION]
+- RESTful API endpoints must follow spec naming and behavior with consistent HTTP methods and status codes.
+- JWT authentication must securely verify user identity in all API requests after initial login.
+- Database persistence must ensure data integrity for all CRUD operations with proper validation and constraints.
+- Frontend must integrate with backend APIs correctly, reflecting all task operations with real-time updates.
+- Error handling and UX feedback must be consistent and user-friendly with appropriate messaging and graceful failure handling.
+- All development must follow the specified tech stack: Next.js 16+ (App Router), FastAPI, SQLModel, Neon Serverless PostgreSQL, Better Auth for authentication.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+## Constraints
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+- API must enforce JWT authentication on all endpoints after login, returning 401 Unauthorized for unauthenticated requests.
+- Task operations limited to authenticated users only, with proper validation that users can only modify their own data.
+- Frontend must support responsive layouts for desktop and mobile, adhering to accessibility standards.
+- Shared secret for JWT signing (`BETTER_AUTH_SECRET`) must be consistently applied across all services for proper authentication.
+- Project must be completed using Claude Code + Spec-Kit Plus workflow—no manual coding outside the defined process is allowed.
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+## Success Criteria
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+- All API endpoints correctly implement CRUD functionality with proper validation and error handling.
+- JWT authentication works end-to-end; unauthenticated requests return 401 Unauthorized and authenticated users can access protected resources.
+- Users can only access and modify their own tasks, with proper enforcement of data isolation between users.
+- Frontend properly displays, creates, updates, deletes, and completes tasks with appropriate UI feedback and state management.
+- Application can be deployed and tested successfully with reproducible setup documented in the deployment guides.
+- All specs, plans, and tasks are documented clearly for hackathon review and future maintenance.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+All development activities must comply with the principles and standards outlined in this constitution. The constitution serves as the authoritative source for development practices and supersedes any conflicting guidance. Any amendments to the constitution must be formally documented and approved by the project stakeholders. All pull requests and code reviews must verify compliance with these principles before approval. Development teams must ensure that all implementation decisions align with these principles and can justify any exceptions with clear business reasoning.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.0 | **Ratified**: 2026-02-09 | **Last Amended**: 2026-02-09
