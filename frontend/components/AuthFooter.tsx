@@ -51,29 +51,29 @@ export const AuthFooter: React.FC = () => {
   ];
 
   return (
-    <footer className="w-full py-12 px-4 mt-auto bg-gradient-to-r from-gray-900 via-blue-900 to-gray-900 text-white">
+    <footer className="w-full py-6 px-4 mt-auto bg-gradient-to-r from-gray-900 via-blue-900 to-gray-900 text-white">
       <div className="max-w-6xl mx-auto">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
           {/* Brand Section */}
           <div>
-            <h3 className="text-2xl font-bold mb-3 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+            <h3 className="text-lg font-bold mb-2 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
               TaskFlow
             </h3>
-            <p className="text-gray-300 text-sm leading-relaxed">
+            <p className="text-gray-300 text-xs leading-relaxed">
               Organize your tasks efficiently and stay productive with our modern task management platform.
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
-            <nav className="flex flex-col gap-2">
+            <h4 className="text-sm font-semibold mb-2">Quick Links</h4>
+            <nav className="flex flex-col gap-1">
               {links.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-gray-300 hover:text-blue-400 transition-colors duration-200 text-sm"
+                  className="text-gray-300 hover:text-blue-400 transition-colors duration-200 text-xs"
                 >
                   {link.label}
                 </Link>
@@ -83,18 +83,18 @@ export const AuthFooter: React.FC = () => {
 
           {/* Social Media */}
           <div>
-            <h4 className="text-lg font-semibold mb-4">Connect With Us</h4>
-            <div className="flex gap-4">
+            <h4 className="text-sm font-semibold mb-2">Connect With Us</h4>
+            <div className="flex gap-3">
               {socialLinks.map((social) => (
                 <a
                   key={social.name}
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-600 transition-all duration-300 transform hover:scale-110 hover:shadow-lg"
+                  className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-600 transition-all duration-300 transform hover:scale-110 hover:shadow-lg"
                   aria-label={social.name}
                 >
-                  {social.icon}
+                  <div className="scale-75">{social.icon}</div>
                 </a>
               ))}
             </div>
@@ -102,8 +102,8 @@ export const AuthFooter: React.FC = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-gray-700">
-          <p className="text-center text-sm text-gray-400">
+        <div className="pt-4 border-t border-gray-700">
+          <p className="text-center text-xs text-gray-400">
             © {currentYear} TaskFlow. All rights reserved. Built with ❤️ for productivity.
           </p>
         </div>
