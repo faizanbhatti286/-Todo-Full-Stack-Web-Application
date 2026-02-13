@@ -122,6 +122,27 @@ body {
   animation: slide-in 0.3s ease-out;
 }
 
+/* Animation Delay Utilities */
+.animate-delay-100 {
+  animation-delay: 0.1s;
+}
+
+.animate-delay-200 {
+  animation-delay: 0.2s;
+}
+
+.animate-delay-300 {
+  animation-delay: 0.3s;
+}
+
+.animate-delay-400 {
+  animation-delay: 0.4s;
+}
+
+.animate-delay-500 {
+  animation-delay: 0.5s;
+}
+
 /* Transition Utilities */
 .transition-smooth {
   transition: all 0.3s ease-in-out;

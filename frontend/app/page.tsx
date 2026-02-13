@@ -4,7 +4,7 @@ import { AuthFooter } from '@/components/AuthFooter';
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 via-white to-gray-50">
+    <div className="min-h-screen flex flex-col bg-linear-to-br from-blue-50 via-white to-gray-50">
       {/* Hero Section */}
       <div className="flex-1 flex items-center justify-center px-4 py-12">
         <div className="max-w-4xl mx-auto text-center animate-fadeIn">
