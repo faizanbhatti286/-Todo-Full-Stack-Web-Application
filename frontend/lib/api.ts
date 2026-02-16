@@ -16,8 +16,15 @@ import {
   Task
 } from './types';
 
-// API Configuration
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
+// ✅ FIXED API Configuration (production safe)
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL as string;
+
+// Safety check (optional but recommended)
+if (!API_BASE_URL) {
+  throw new Error(
+    "NEXT_PUBLIC_API_BASE_URL is not defined. Please set it in .env.local or Vercel environment variables."
+  );
+}
 
 /**
  * Custom error class for API errors
@@ -92,18 +99,15 @@ async function apiRequest<T>(
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       ...options,
       headers,
-      credentials: 'include', // Required for CORS with allow_credentials=True
+      credentials: 'include',
     });
 
-    // Handle errors
     if (!response.ok) {
       let errorData: unknown = null;
 
       try {
-        // Try parsing JSON
         errorData = await response.json();
       } catch {
-        // Fallback to text
         const text = await response.text();
         throw new APIError(
           'UNKNOWN_ERROR',
@@ -113,34 +117,20 @@ async function apiRequest<T>(
         );
       }
 
-      // Log only unexpected errors (not validation/auth errors)
-      if (response.status >= 500 || response.status === 0) {
-        console.error('API Error Response:', response.status, response.statusText, errorData);
-      }
-
-      // Check if it's a standard API error response
       if (isAPIErrorResponse(errorData)) {
         throw APIError.fromResponse(errorData, response.status);
       }
 
-      // Handle FastAPI's detail field (most common format)
       if (errorData && typeof errorData === 'object' && 'detail' in errorData) {
         const detail = (errorData as { detail: unknown }).detail;
-        const detailMessage = typeof detail === 'string'
-          ? detail
-          : JSON.stringify(detail);
+        const detailMessage =
+          typeof detail === 'string' ? detail : JSON.stringify(detail);
 
-        // Map specific error messages to error codes
         let errorCode = 'UNKNOWN_ERROR';
-        if (response.status === 409) {
-          errorCode = 'CONFLICT';
-        } else if (response.status === 400) {
-          errorCode = 'VALIDATION_ERROR';
-        } else if (response.status === 401) {
-          errorCode = 'UNAUTHORIZED';
-        } else if (response.status === 404) {
-          errorCode = 'NOT_FOUND';
-        }
+        if (response.status === 409) errorCode = 'CONFLICT';
+        else if (response.status === 400) errorCode = 'VALIDATION_ERROR';
+        else if (response.status === 401) errorCode = 'UNAUTHORIZED';
+        else if (response.status === 404) errorCode = 'NOT_FOUND';
 
         throw new APIError(
           errorCode,
@@ -150,33 +140,20 @@ async function apiRequest<T>(
         );
       }
 
-      // Handle other error formats
-      if (errorData && typeof errorData === 'object' && 'message' in errorData) {
-        const message = (errorData as { message: unknown }).message;
-        throw new APIError(
-          'UNKNOWN_ERROR',
-          typeof message === 'string' ? message : 'An unexpected error occurred',
-          `HTTP ${response.status}`,
-          response.status
-        );
-      }
-
-      // Fallback error
       throw new APIError(
         'UNKNOWN_ERROR',
         'An unexpected error occurred',
-        `HTTP ${response.status}: ${response.statusText}`,
+        `HTTP ${response.status}`,
         response.status
       );
     }
 
-    // Return JSON response
-    // Handle 204 No Content (no response body)
     if (response.status === 204) {
       return null as T;
     }
 
     return await response.json();
+
   } catch (error) {
     if (error instanceof APIError) throw error;
 
@@ -201,17 +178,25 @@ async function apiRequest<T>(
  */
 export const authAPI = {
   async login(credentials: LoginRequest): Promise<LoginResponse> {
-    return apiRequest<LoginResponse>('/auth/signin', {
-      method: 'POST',
-      body: JSON.stringify(credentials),
-    }, false);
+    return apiRequest<LoginResponse>(
+      '/auth/signin',
+      {
+        method: 'POST',
+        body: JSON.stringify(credentials),
+      },
+      false
+    );
   },
 
   async signup(credentials: SignupRequest): Promise<SignupResponse> {
-    return apiRequest<SignupResponse>('/auth/signup', {
-      method: 'POST',
-      body: JSON.stringify(credentials),
-    }, false);
+    return apiRequest<SignupResponse>(
+      '/auth/signup',
+      {
+        method: 'POST',
+        body: JSON.stringify(credentials),
+      },
+      false
+    );
   },
 };
 
@@ -241,11 +226,7 @@ export const taskAPI = {
     });
   },
 
-  async updateTask(
-    userId: string,
-    taskId: string,
-    updates: PartialUpdateTaskRequest
-  ): Promise<Task> {
+  async updateTask(userId: string, taskId: string, updates: PartialUpdateTaskRequest): Promise<Task> {
     return apiRequest<Task>(`/api/users/${userId}/tasks/${taskId}`, {
       method: 'PATCH',
       body: JSON.stringify(updates),
