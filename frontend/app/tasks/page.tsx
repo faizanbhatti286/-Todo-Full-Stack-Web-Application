@@ -182,7 +182,7 @@ export default function TasksPage() {
             </div>
             <button
               onClick={() => setShowCreateForm(!showCreateForm)}
-              className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors min-h-[44px] font-medium"
+              className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors min-h-11 font-medium"
             >
               <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -217,7 +217,7 @@ export default function TasksPage() {
           ].map((filter) => (
             <button
               key={filter.value}
-              onClick={() => setActiveFilter(filter.value as any)}
+              onClick={() => setActiveFilter(filter.value as 'all' | 'pending' | 'completed')}
               className={`flex-1 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
                 activeFilter === filter.value
                   ? 'bg-blue-600 text-white shadow-md'
@@ -259,7 +259,7 @@ export default function TasksPage() {
                   {/* Status Icon */}
                   <button
                     onClick={() => handleToggleComplete(task.id, task.is_completed)}
-                    className="flex-shrink-0 w-11 h-11 flex items-center justify-center rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+                    className="shrink-0 w-11 h-11 flex items-center justify-center rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
                   >
                     {task.is_completed ? (
                       <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">

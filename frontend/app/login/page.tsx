@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/Input';
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login, error, clearError, user } = useAuth();
+  const { login, error, user } = useAuth();
   const [successMessage, setSuccessMessage] = useState('');
   const [validationError, setValidationError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -25,12 +25,6 @@ export default function LoginPage() {
       router.push('/tasks');
     }
   }, [user, router]);
-
-  // Check if input is email format
-  const isEmail = (input: string): boolean => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(input);
-  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,13 +51,19 @@ export default function LoginPage() {
       // Immediately redirect to tasks without waiting
       setSuccessMessage('Login successful!');
       router.push('/tasks');
-    } catch (err: any) {
+    } catch (err: unknown) {
       // Handle authentication errors (401, 400) as normal user feedback
-      if (err.status === 401 || err.status === 400 || err.code === 'UNAUTHORIZED' || err.code === 'VALIDATION_ERROR') {
-        // This is expected user feedback, not an application error
-        setValidationError(err.message || 'Invalid credentials. Please try again.');
+      if (err && typeof err === 'object' && 'status' in err && 'code' in err && 'message' in err) {
+        const error = err as { status?: number; code?: string; message?: string };
+        if (error.status === 401 || error.status === 400 || error.code === 'UNAUTHORIZED' || error.code === 'VALIDATION_ERROR') {
+          // This is expected user feedback, not an application error
+          setValidationError(error.message || 'Invalid credentials. Please try again.');
+        } else {
+          // Log actual errors (network issues, server errors, etc.)
+          console.error('Login error:', err);
+          setValidationError('An unexpected error occurred. Please try again.');
+        }
       } else {
-        // Log actual errors (network issues, server errors, etc.)
         console.error('Login error:', err);
         setValidationError('An unexpected error occurred. Please try again.');
       }

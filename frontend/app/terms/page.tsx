@@ -1,4 +1,5 @@
 import { AuthFooter } from '@/components/AuthFooter';
+import Link from 'next/link';
 
 export default function TermsPage() {
   return (
@@ -46,7 +47,7 @@ export default function TermsPage() {
                   <li>To violate any regulations or laws</li>
                   <li>To harm or exploit minors</li>
                   <li>To transmit malicious code or viruses</li>
-                  <li>To interfere with the service's security features</li>
+                  <li>To interfere with the service&apos;s security features</li>
                 </ul>
               </section>
 
@@ -84,9 +85,9 @@ export default function TermsPage() {
             </div>
 
             <div className="mt-8 pt-8 border-t border-gray-200">
-              <a href="/" className="text-blue-600 hover:text-blue-700 font-medium">
+              <Link href="/" className="text-blue-600 hover:text-blue-700 font-medium">
                 ← Back to Home
-              </a>
+              </Link>
             </div>
           </div>
         </div>

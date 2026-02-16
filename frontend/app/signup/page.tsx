@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/Input';
 
 export default function SignupPage() {
   const router = useRouter();
-  const { signup, error, clearError, user } = useAuth();
+  const { signup, error, user } = useAuth();
   const [successMessage, setSuccessMessage] = useState('');
   const [validationError, setValidationError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -116,13 +116,19 @@ export default function SignupPage() {
       // Immediately redirect to login without waiting
       setSuccessMessage('Account created successfully! Redirecting...');
       router.push('/login');
-    } catch (err: any) {
+    } catch (err: unknown) {
       // Handle validation errors (409, 400) as normal user feedback
-      if (err.status === 409 || err.status === 400 || err.code === 'CONFLICT' || err.code === 'VALIDATION_ERROR') {
-        // This is expected user feedback, not an application error
-        setValidationError(err.message || 'Please check your input and try again.');
+      if (err && typeof err === 'object' && 'status' in err && 'code' in err && 'message' in err) {
+        const error = err as { status?: number; code?: string; message?: string };
+        if (error.status === 409 || error.status === 400 || error.code === 'CONFLICT' || error.code === 'VALIDATION_ERROR') {
+          // This is expected user feedback, not an application error
+          setValidationError(error.message || 'Please check your input and try again.');
+        } else {
+          // Log actual errors (network issues, server errors, etc.)
+          console.error('Signup error:', err);
+          setValidationError('An unexpected error occurred. Please try again.');
+        }
       } else {
-        // Log actual errors (network issues, server errors, etc.)
         console.error('Signup error:', err);
         setValidationError('An unexpected error occurred. Please try again.');
       }
@@ -196,8 +202,7 @@ export default function SignupPage() {
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
                       <div
-                        className={`h-2 rounded-full transition-all duration-300 ${passwordStrength.color}`}
-                        style={{ width: `${(passwordStrength.strength / 5) * 100}%` }}
+                        className={`h-2 rounded-full progress-bar ${passwordStrength.color} progress-${Math.round((passwordStrength.strength / 5) * 100)}`}
                       />
                     </div>
                   </div>

@@ -1,4 +1,6 @@
+
 import { AuthFooter } from '@/components/AuthFooter';
+import Link from 'next/link';
 
 export default function AboutPage() {
   return (
@@ -39,9 +41,9 @@ export default function AboutPage() {
             </div>
 
             <div className="mt-8 pt-8 border-t border-gray-200">
-              <a href="/" className="text-blue-600 hover:text-blue-700 font-medium">
+              <Link href="/" className="text-blue-600 hover:text-blue-700 font-medium">
                 ← Back to Home
-              </a>
+              </Link>
             </div>
           </div>
         </div>

@@ -11,13 +11,8 @@ import {
   LoginResponse,
   SignupRequest,
   SignupResponse,
-  ListTasksResponse,
   CreateTaskRequest,
-  CreateTaskResponse,
-  UpdateTaskResponse,
   PartialUpdateTaskRequest,
-  DeleteTaskResponse,
-  GetTaskResponse,
   Task
 } from './types';
 
@@ -102,7 +97,7 @@ async function apiRequest<T>(
 
     // Handle errors
     if (!response.ok) {
-      let errorData: any = null;
+      let errorData: unknown = null;
 
       try {
         // Try parsing JSON
@@ -129,10 +124,11 @@ async function apiRequest<T>(
       }
 
       // Handle FastAPI's detail field (most common format)
-      if (errorData.detail) {
-        const detailMessage = typeof errorData.detail === 'string'
-          ? errorData.detail
-          : JSON.stringify(errorData.detail);
+      if (errorData && typeof errorData === 'object' && 'detail' in errorData) {
+        const detail = (errorData as { detail: unknown }).detail;
+        const detailMessage = typeof detail === 'string'
+          ? detail
+          : JSON.stringify(detail);
 
         // Map specific error messages to error codes
         let errorCode = 'UNKNOWN_ERROR';
@@ -155,10 +151,11 @@ async function apiRequest<T>(
       }
 
       // Handle other error formats
-      if (errorData.message) {
+      if (errorData && typeof errorData === 'object' && 'message' in errorData) {
+        const message = (errorData as { message: unknown }).message;
         throw new APIError(
           'UNKNOWN_ERROR',
-          errorData.message,
+          typeof message === 'string' ? message : 'An unexpected error occurred',
           `HTTP ${response.status}`,
           response.status
         );
