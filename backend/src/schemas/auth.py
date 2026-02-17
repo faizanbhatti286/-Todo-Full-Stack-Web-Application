@@ -33,11 +33,11 @@ class UserSigninRequest(BaseModel):
     """Request schema for user signin.
 
     Attributes:
-        username_or_email: User's username or email address
+        email: User's email address
         password: Plain text password
     """
 
-    username_or_email: str = Field(..., max_length=255)
+    email: EmailStr = Field(..., max_length=255)
     password: str
 
 

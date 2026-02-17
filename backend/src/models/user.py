@@ -19,6 +19,8 @@ class User(SQLModel, table=True):
         hashed_password: Bcrypt-hashed password
         is_active: Whether the user account is active
         created_at: Account creation timestamp
+        reset_token: Password reset token (nullable)
+        reset_token_expires_at: Reset token expiration timestamp (nullable)
     """
 
     __tablename__ = "users"
@@ -29,3 +31,5 @@ class User(SQLModel, table=True):
     hashed_password: str = Field(max_length=255)
     is_active: Optional[bool] = Field(default=True)
     created_at: datetime = Field(default_factory=datetime.utcnow)
+    reset_token: Optional[str] = Field(default=None, max_length=255)
+    reset_token_expires_at: Optional[datetime] = Field(default=None)

@@ -23,7 +23,7 @@ interface AuthState {
  * Authentication context value interface
  */
 interface AuthContextValue extends AuthState {
-  login: (usernameOrEmail: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<void>;
   signup: (username: string, email: string, password: string) => Promise<void>;
   logout: () => void;
   clearError: () => void;
@@ -108,11 +108,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
   /**
    * Login method
    */
-  const login = async (usernameOrEmail: string, password: string): Promise<void> => {
+  const login = async (email: string, password: string): Promise<void> => {
     setState(prev => ({ ...prev, loading: true, error: null }));
 
     try {
-      const response = await authAPI.login({ username_or_email: usernameOrEmail, password });
+      const response = await authAPI.login({ email, password });
 
       // Create user object from response
       const user: User = {

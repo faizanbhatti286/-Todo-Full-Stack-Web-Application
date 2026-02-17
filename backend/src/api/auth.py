@@ -101,7 +101,7 @@ async def signin(
     """Sign in to an existing account.
 
     Args:
-        request: User signin request with username/email and password
+        request: User signin request with email and password
         session: Database session
 
     Returns:
@@ -111,12 +111,12 @@ async def signin(
         HTTPException 401: If credentials are invalid
     """
     # Authenticate user
-    user = await authenticate_user(request.username_or_email, request.password, session)
+    user = await authenticate_user(request.email, request.password, session)
 
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid username/email or password",
+            detail="Invalid email or password",
         )
 
     # Create JWT token

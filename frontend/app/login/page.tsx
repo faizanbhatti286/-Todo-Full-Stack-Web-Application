@@ -16,8 +16,14 @@ export default function LoginPage() {
   const [validationError, setValidationError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const [usernameOrEmail, setUsernameOrEmail] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  // Email validation
+  const isValidEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -31,9 +37,15 @@ export default function LoginPage() {
     setValidationError('');
     setIsLoading(true);
 
-    // Validate username or email
-    if (!usernameOrEmail.trim()) {
-      setValidationError('Username or email is required');
+    // Validate email
+    if (!email.trim()) {
+      setValidationError('Email is required');
+      setIsLoading(false);
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      setValidationError('Please enter a valid email address');
       setIsLoading(false);
       return;
     }
@@ -46,7 +58,7 @@ export default function LoginPage() {
     }
 
     try {
-      await login(usernameOrEmail, password);
+      await login(email, password);
 
       // Immediately redirect to tasks without waiting
       setSuccessMessage('Login successful!');
@@ -95,11 +107,11 @@ export default function LoginPage() {
             {/* Login Form */}
             <form onSubmit={handleLogin} className="space-y-5">
               <Input
-                type="text"
-                placeholder="Username or Email"
-                value={usernameOrEmail}
-                onChange={(e) => setUsernameOrEmail(e.target.value)}
-                error={validationError && !usernameOrEmail ? validationError : undefined}
+                type="email"
+                placeholder="Email address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                error={validationError && !isValidEmail(email) && email ? 'Please enter a valid email' : undefined}
                 required
               />
 

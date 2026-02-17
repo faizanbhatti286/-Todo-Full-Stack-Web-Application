@@ -53,7 +53,7 @@ export interface UserSession {
  * Login request payload
  */
 export interface LoginRequest {
-  username_or_email: string;
+  email: string;
   password: string;
 }
 

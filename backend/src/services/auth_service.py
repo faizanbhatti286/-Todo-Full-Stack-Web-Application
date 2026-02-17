@@ -142,27 +142,20 @@ async def get_current_user_id(
 
 
 async def authenticate_user(
-    username_or_email: str, password: str, session: AsyncSession
+    email: str, password: str, session: AsyncSession
 ) -> Optional[User]:
-    """Authenticate a user by username or email and password.
+    """Authenticate a user by email and password.
 
     Args:
-        username_or_email: User's username or email address
+        email: User's email address
         password: Plain text password
         session: Database session
 
     Returns:
         User object if authentication successful, None otherwise
     """
-    # Check if input is email format
-    is_email = "@" in username_or_email
-
-    # Find user by email or username
-    if is_email:
-        result = await session.execute(select(User).where(User.email == username_or_email))
-    else:
-        result = await session.execute(select(User).where(User.username == username_or_email))
-
+    # Find user by email
+    result = await session.execute(select(User).where(User.email == email))
     user = result.scalar_one_or_none()
 
     if user is None:
